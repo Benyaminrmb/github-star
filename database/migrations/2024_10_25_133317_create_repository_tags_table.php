@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('repository_tags', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('repository_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+
+            $table->unique(['repository_id', 'tag_id']);
         });
     }
 

@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('repositories', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('github_id')->unique();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('url');
+            $table->string('language')->nullable();
+            $table->string('username');
             $table->timestamps();
         });
     }
