@@ -2,13 +2,18 @@
 
 use App\Http\Controllers\Api\GithubController;
 use App\Http\Controllers\Api\RepositoryController;
+use App\Http\Controllers\Auth\GithubAuthController;
+use App\Http\Middleware\EnsureGithubToken;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['throttle:api'])->group(function () {
-    Route::get('/aa', function (){
-        dd('awd');
-    });
+Route::prefix('auth')->group(function () {
+    Route::get('github', [GithubAuthController::class, 'redirect']);
+    Route::get('github/callback', [GithubAuthController::class, 'callback']);
+    Route::post('logout', [GithubAuthController::class, 'logout'])->middleware('auth:sanctum');
+});
 
+// Protected API routes
+Route::middleware(['auth:sanctum', EnsureGithubToken::class])->group(function () {
     // GitHub endpoints
     Route::get('/sync-starred', [GithubController::class, 'syncStarred']);
     Route::get('/rate-limit', [GithubController::class, 'getRateLimit']);
