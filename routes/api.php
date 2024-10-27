@@ -2,15 +2,16 @@
 
 use App\Http\Controllers\Api\GithubController;
 use App\Http\Controllers\Api\RepositoryController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\GithubAuthController;
 use App\Http\Middleware\EnsureGithubToken;
 use Illuminate\Support\Facades\Route;
 
+
 Route::prefix('auth')->group(function () {
-    Route::get('github', [GithubAuthController::class, 'redirect']);
-    Route::get('github/callback', [GithubAuthController::class, 'callback']);
-    Route::post('logout', [GithubAuthController::class, 'logout'])->middleware('auth:sanctum');
+    Route::post('/login-by-email', [AuthController::class, 'loginByEmail']);
 });
+
 
 // Protected API routes
 Route::middleware(['auth:sanctum', EnsureGithubToken::class])->group(function () {

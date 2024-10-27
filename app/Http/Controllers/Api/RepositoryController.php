@@ -49,7 +49,17 @@ class RepositoryController extends Controller
 
     public function removeTags(Request $request, $repositoryId)
     {
-        $request->validate(['tags' => 'required|array']);
+        $request->validate(
+            [
+                'tags' => [
+                    'array',
+                    'required',
+                ],
+                'tags.*' => [
+                    'exists:tags,name'
+                ],
+            ]
+        );
 
         $this->repository->removeTags($repositoryId, $request->tags);
 

@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
-class GithubAuthController extends Controller
+class GithubAuthController extends AuthController
 {
     public function redirect()
     {
@@ -43,18 +43,7 @@ class GithubAuthController extends Controller
                 ]
             );
 
-            Auth::login($user);
-
-            // Generate Sanctum token for API access
-            $token = $user->createToken('github-token')->plainTextToken;
-
-            return response()->json([
-                'user' => $user->load('githubAccount'),
-                'access_token' => $token,
-                'token_type' => 'Bearer'
-            ]);
-
-
+            return $this->responseUser($user);
     }
 
     public function logout(Request $request)
