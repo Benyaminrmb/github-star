@@ -118,7 +118,8 @@ return [
     ],
 
     'ignore_commands' => [
-        //
+        'migrate',
+        'db:seed',
     ],
 
     /*

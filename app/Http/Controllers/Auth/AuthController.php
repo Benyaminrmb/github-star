@@ -54,4 +54,11 @@ class AuthController extends Controller
     {
         Auth::login($user);
     }
+    public function logout(Request $request)
+    {
+        $request->user()->tokens()->delete();
+        Auth::guard('web')->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
+    }
 }

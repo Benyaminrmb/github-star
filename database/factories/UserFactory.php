@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\GithubAccount;
+use App\Models\User;
+use Closure;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -16,6 +19,15 @@ class UserFactory extends Factory
      */
     protected static ?string $password;
 
+    public function configure(): Factory|UserFactory
+    {
+        return $this->afterCreating(function (User $user) {
+            GithubAccount::factory()->state([
+                'user_id' => $user->id,
+            ])->create();
+        });
+    }
+
     /**
      * Define the model's default state.
      *
@@ -27,7 +39,6 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
     }

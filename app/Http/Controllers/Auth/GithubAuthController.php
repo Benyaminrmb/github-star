@@ -45,12 +45,4 @@ class GithubAuthController extends AuthController
 
             return $this->responseUser($user);
     }
-
-    public function logout(Request $request)
-    {
-        $request->user()->tokens()->delete();
-        Auth::logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
-    }
 }

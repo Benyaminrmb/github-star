@@ -15,6 +15,8 @@ Route::prefix('auth')->group(function () {
 
 // Protected API routes
 Route::middleware(['auth:sanctum', EnsureGithubToken::class])->group(function () {
+    // GitHub Auth
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
     // GitHub endpoints
     Route::get('/sync-starred', [GithubController::class, 'syncStarred']);
     Route::get('/rate-limit', [GithubController::class, 'getRateLimit']);

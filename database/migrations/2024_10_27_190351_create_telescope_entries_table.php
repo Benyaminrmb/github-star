@@ -19,7 +19,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $schema = Schema::connection($this->getConnection());
+       /* $schema = Schema::connection($this->getConnection());
 
         $schema->create('telescope_entries', function (Blueprint $table) {
             $table->bigIncrements('sequence');
@@ -53,7 +53,7 @@ return new class extends Migration
 
         $schema->create('telescope_monitoring', function (Blueprint $table) {
             $table->string('tag')->primary();
-        });
+        });*/
     }
 
     /**
