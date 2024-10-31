@@ -4,12 +4,13 @@ namespace App\Services\Github;
 
 use App\Exceptions\GithubApiException;
 use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 
 class GithubService
 {
     private string $baseUrl;
+
     private const CACHE_TTL = 3600; // 1 hour
 
     public function __construct()
@@ -22,11 +23,11 @@ class GithubService
      */
     public function getStarredRepositories(?string $token = null): array
     {
-        if (!$token) {
+        if (! $token) {
             throw new GithubApiException('GitHub token is required');
         }
 
-        $cacheKey = "github_stars_" . md5($token);
+        $cacheKey = 'github_stars_'.md5($token);
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($token) {
             $response = Http::withToken($token)
@@ -35,7 +36,7 @@ class GithubService
                     'accept' => 'application/vnd.github.v3+json',
                 ]);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 throw new GithubApiException(
                     "Failed to fetch starred repositories: {$response->body()}",
                     $response->status()
@@ -52,6 +53,7 @@ class GithubService
     public function getRateLimit(string $token): array
     {
         $response = Http::withToken($token)->get("{$this->baseUrl}/rate_limit");
+
         return $response->json()['resources']['core'] ?? [];
     }
 }

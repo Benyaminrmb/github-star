@@ -3,16 +3,12 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
-use App\Models\GithubAccount;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\User as SocialiteUser;
 use Mockery;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Laravel\Socialite\Two\AbstractProvider;
 
 class GithubAuthControllerTest extends TestCase
 {
@@ -25,7 +21,7 @@ class GithubAuthControllerTest extends TestCase
         Mockery::close();
     }
 
-    public function test_redirect_returns_github_redirect_response()
+    public function test_redirect_returns_github_redirect_response(): void
     {
         $abstractRedirectResponse = Mockery::mock(AbstractProvider::class);
         $abstractRedirectResponse->shouldReceive('scopes')->with(['read:user', 'user:email', 'repo'])->andReturn($abstractRedirectResponse);
@@ -35,12 +31,11 @@ class GithubAuthControllerTest extends TestCase
 
         $response = $this->get('/auth/github');
 
-
         $response->assertStatus(302);
         $response->assertRedirect();
     }
 
-    public function test_callback_creates_new_user_and_github_account()
+    public function test_callback_creates_new_user_and_github_account(): void
     {
         // Create mock Socialite User
         $socialiteUser = Mockery::mock(SocialiteUser::class);
@@ -55,8 +50,8 @@ class GithubAuthControllerTest extends TestCase
         // Mock Socialite facade
         Socialite::shouldReceive('driver')->with('github')->andReturn(Mockery::mock([
             'stateless' => Mockery::mock([
-                'user' => $socialiteUser
-            ])
+                'user' => $socialiteUser,
+            ]),
         ]));
 
         $response = $this->get('/auth/github/callback');
@@ -84,22 +79,19 @@ class GithubAuthControllerTest extends TestCase
                 'name',
                 'email',
             ],
-            'access_token'
+            'access_token',
         ]);
     }
 
-
-    public function test_logout_deletes_tokens_and_logs_out_user()
+    public function test_logout_deletes_tokens_and_logs_out_user(): void
     {
         $user = User::factory()->create();
 
-
         $response = $this
             ->withHeaders([
-                'authorization' => 'Bearer ' . $user->createToken('github-token')->plainTextToken
+                'authorization' => 'Bearer '.$user->createToken('github-token')->plainTextToken,
             ])->json('post', 'api/auth/logout');
         $response->assertStatus(200);
-
 
         $response->assertJson(['message' => 'Successfully logged out']);
 

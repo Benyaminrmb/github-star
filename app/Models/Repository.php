@@ -2,18 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Repository extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'github_id',
         'name',
         'description',
         'url',
         'language',
-        'username'
+        'username',
     ];
 
     public function tags(): BelongsToMany

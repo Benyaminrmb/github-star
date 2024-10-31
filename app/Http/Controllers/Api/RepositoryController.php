@@ -30,7 +30,7 @@ class RepositoryController extends Controller
     {
         $request->validate([
             'username' => 'required|string',
-            'tag' => 'required|string'
+            'tag' => 'required|string',
         ]);
 
         return RepositoryResource::collection(
@@ -56,7 +56,7 @@ class RepositoryController extends Controller
                     'required',
                 ],
                 'tags.*' => [
-                    'exists:tags,name'
+                    'exists:tags,name',
                 ],
             ]
         );
@@ -66,4 +66,3 @@ class RepositoryController extends Controller
         return response()->json(['message' => 'Tags removed successfully']);
     }
 }
-
