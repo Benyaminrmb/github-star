@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\GithubApiException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RepositoryResource;
 use App\Repositories\Contracts\RepositoryInterface;
@@ -19,20 +20,26 @@ class GithubController extends Controller
         $this->repository = $repository;
     }
 
+    /**
+     * @throws GithubApiException
+     */
     public function syncStarred(Request $request): AnonymousResourceCollection
     {
-        $request->validate(['username' => 'required|string']);
+        $githubAccount = $request->user()->githubAccount;
 
-        $starredRepos = $this->githubService->getStarredRepositories($request->username);
-        $this->repository->syncStarredRepositories($request->username, $starredRepos);
+        $starredRepos = $this->githubService->getStarredRepositories($githubAccount->github_token);
+
+        $this->repository->syncStarredRepositories($githubAccount->github_username, $starredRepos);
 
         return RepositoryResource::collection(
-            $this->repository->findByUsername($request->username)
+            $this->repository->findByUsername($githubAccount->github_username)
         );
     }
 
-    public function getRateLimit(): \Illuminate\Http\JsonResponse
+    public function getRateLimit(Request $request)
     {
-        return response()->json($this->githubService->getRateLimit());
+        return response()->json(
+            $this->githubService->getRateLimit($request->user()->githubAccount->github_token)
+        );
     }
 }

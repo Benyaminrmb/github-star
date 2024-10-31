@@ -53,7 +53,8 @@ class RepositoryRepository implements RepositoryInterface
     public function removeTags(int $repositoryId, array $tags): void
     {
         $repository = Repository::findOrFail($repositoryId);
-        $tagIds = Tag::whereIn('name', $tags)->pluck('id');
-        $repository->tags()->detach($tagIds);
+        $tagIds = Tag::whereIn('name', $tags);
+        $repository->tags()->detach($tagIds->pluck('id'));
+        $tagIds->delete();
     }
 }

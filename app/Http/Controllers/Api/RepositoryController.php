@@ -30,7 +30,7 @@ class RepositoryController extends Controller
     {
         $request->validate([
             'username' => 'required|string',
-            'tag' => 'required|string'
+            'tag' => 'required|string',
         ]);
 
         return RepositoryResource::collection(
@@ -49,11 +49,20 @@ class RepositoryController extends Controller
 
     public function removeTags(Request $request, $repositoryId)
     {
-        $request->validate(['tags' => 'required|array']);
+        $request->validate(
+            [
+                'tags' => [
+                    'array',
+                    'required',
+                ],
+                'tags.*' => [
+                    'exists:tags,name',
+                ],
+            ]
+        );
 
         $this->repository->removeTags($repositoryId, $request->tags);
 
         return response()->json(['message' => 'Tags removed successfully']);
     }
 }
-

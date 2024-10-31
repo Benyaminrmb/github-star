@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('repository_tags', function (Blueprint $table) {
+        Schema::create('repository_tag', function (Blueprint $table) {
             $table->id();
             $table->foreignId('repository_id')->constrained()->onDelete('cascade');
             $table->foreignId('tag_id')->constrained()->onDelete('cascade');
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('repository_tags');
+        Schema::dropIfExists('repository_tag');
     }
 };
