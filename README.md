@@ -1,105 +1,131 @@
-# GitHub Stars API
+# Laravel GitHub Stars Manager
 
-A Laravel-based API for managing GitHub starred repositories with custom tagging functionality.
+A Laravel-based API service that helps developers manage their GitHub starred repositories with additional features like custom tagging and advanced search capabilities.
 
-## Features
+## 🚀 Features
 
-- Fetch and sync starred repositories from GitHub
-- Add custom tags to repositories
-- Search repositories by tags
-- Rate limiting protection
-- Caching implementation
-- Full test coverage
+- OAuth2 GitHub authentication
+- Automatic syncing of starred repositories
+- Custom tagging system for better organization
+- Repository search functionality
+- Protected API endpoints with sanctum authentication
+- GitHub API rate limit monitoring
 
-## Requirements
 
-- PHP 8.1 or higher
-- MySQL 5.7 or higher
-- Composer
+## ⚡ Quick Installation
 
-## Installation
-
-1. Clone the repository:
+1. Clone the repository
 ```bash
-git clone <repository-url>
-cd github-stars-api
+git clone https://github.com/Benyaminrmb/github-star
+cd github-star
 ```
 
-2. Install dependencies:
+2. Install PHP dependencies
 ```bash
 composer install
 ```
 
-3. Create and configure .env file:
+3. Set up environment variables
 ```bash
 cp .env.example .env
 ```
 
-4. Generate application key:
+4. Configure your `.env` file with:
+    - Database credentials
+    - GitHub OAuth credentials
+   ```
+   GITHUB_CLIENT_ID=your_client_id
+   GITHUB_CLIENT_SECRET=your_client_secret
+   GITHUB_REDIRECT_URI=http://localhost:8000/auth/github/callback
+   ```
+
+5. Generate application key
 ```bash
 php artisan key:generate
 ```
 
-5. Configure your database in .env file:
-```
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=github_stars
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
-```
-
-6. Run migrations:
+6. Run database migrations
 ```bash
 php artisan migrate
 ```
 
-## API Endpoints
+## 🔑 Authentication
 
-### Sync Starred Repositories
-```
-POST /api/sync-starred
-Body: { "username": "github_username" }
-```
+### GitHub OAuth Authentication
 
-### Get User's Repositories
-```
-GET /api/repositories?username=github_username
-```
+The application uses GitHub OAuth for authentication. To authenticate:
 
-### Search Repositories by Tag
-```
-GET /api/repositories/search?username=github_username&tag=tag_name
-```
+1. Navigate to `/auth/github` in your browser
+2. Authorize the application
+3. You'll be redirected to the callback URL with your access token
 
-### Add Tags to Repository
+### API Authentication
+
+All protected endpoints require a valid Bearer token in the Authorization header:
 ```
-POST /api/repositories/{repository_id}/tags
-Body: { "tags": ["tag1", "tag2"] }
+Authorization: Bearer <your-token>
 ```
 
-### Remove Tags from Repository
+## 📡 API Endpoints
+
+### Authentication
 ```
-DELETE /api/repositories/{repository_id}/tags
-Body: { "tags": ["tag1", "tag2"] }
+POST /api/auth/login-by-email    // Email-based authentication
+POST /api/auth/logout            // Logout (requires authentication)
 ```
 
-### Check GitHub API Rate Limit
+### GitHub Integration
 ```
-GET /api/rate-limit
+GET /api/sync-starred           // Sync starred repositories from GitHub
+GET /api/rate-limit            // Check GitHub API rate limit status
 ```
 
-## Running Tests
+### Repository Management
+```
+GET    /api/repositories              // List all repositories
+GET    /api/repositories/search       // Search repositories
+POST   /api/repositories/{id}/tags    // Add tags to repository
+DELETE /api/repositories/{id}/tags    // Remove tags from repository
+```
 
+## 🔒 Security
+
+- All API endpoints (except authentication) are protected with Laravel Sanctum
+- GitHub token validation middleware
+- Rate limiting protection
+
+## 💡 Usage Examples
+
+### Adding Tags to Repository
+```bash
+curl -X POST \
+  'http://localhost:8000/api/repositories/123/tags' \
+  -H 'Authorization: Bearer your-token' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "tags": ["frontend", "vue", "javascript"]
+}'
+```
+
+### Searching Repositories
+```bash
+curl -X GET \
+  'http://localhost:8000/api/repositories/search?username=benyaminrmb&tags=frontend' \
+  -H 'Authorization: Bearer your-token'
+```
+
+## ⚙️ Development
+
+### Running Tests
 ```bash
 php artisan test
 ```
 
-## Rate Limiting
 
-The API is protected by rate limiting of 60 requests per minute per IP address.
-
-## License
+## 📝 License
 
 This project is open-sourced software licensed under the MIT license.
+
+## 📫 Support
+
+If you encounter any problems or have questions, please open an issue in the GitHub repository.

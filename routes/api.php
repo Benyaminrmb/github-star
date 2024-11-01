@@ -3,7 +3,6 @@
 use App\Http\Controllers\Api\GithubController;
 use App\Http\Controllers\Api\RepositoryController;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\GithubAuthController;
 use App\Http\Middleware\EnsureGithubToken;
 use Illuminate\Support\Facades\Route;
 
